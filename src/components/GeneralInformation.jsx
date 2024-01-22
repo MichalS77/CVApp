@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Form() {
+export default function GeneralInformation() {
 const [ name, setName] = useState('')
 const [email, setEmail] = useState('')
 const [address, setAddress] = useState('')
@@ -42,7 +42,7 @@ const handleStatus = (e) =>{
   </label>
   <br/>
   <button style={{ display: status === 'submitted' ? 'none' : 'inline-block'}} type="submit">Submit</button>
-  <button style={{ display: status === 'editing' ? 'none' : 'inline-block'}} onClick={handleStatus}>edit</button>
+  <button style={{ display: status === 'editing' ? 'none' : 'inline-block'}} onClick={handleStatus}>Edit</button>
   </form>
   </div>)
 }
