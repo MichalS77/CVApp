@@ -1,7 +1,13 @@
 import { useState } from "react";
 import EducationalExperienceDisplay from "./EducationalExperienceDisplay";
 
-function handleEducationalExperience(e, setEducationalExperience) {
+function handleEducationalExperience(
+  e,
+  setEducationalExperience,
+  editingIndex,
+  setEditingIndex,
+  setFormState
+) {
   e.preventDefault();
 
   const { degreeName, institutionName, yearFrom, yearTo } = e.target.elements;
@@ -13,10 +19,25 @@ function handleEducationalExperience(e, setEducationalExperience) {
     yearTo: yearTo.value,
   };
 
-  setEducationalExperience((prevExperiences) => [
-    ...prevExperiences,
-    newExperience,
-  ]);
+  if (editingIndex === null) {
+    setEducationalExperience((prevExperiences) => [
+      ...prevExperiences,
+      newExperience,
+    ]);
+  } else {
+    setEducationalExperience((prevExperiences) =>
+      prevExperiences.map((experience, index) => {
+        return index === editingIndex ? newExperience : experience;
+      })
+    );
+    setEditingIndex(null);
+  }
+  setFormState(
+    (degreeName.value = ""),
+    (institutionName.value = ""),
+    (yearFrom.value = ""),
+    (yearTo.value = "")
+  );
 }
 
 function handleDeleteExperience(index, setEducationalExperience) {
@@ -25,37 +46,89 @@ function handleDeleteExperience(index, setEducationalExperience) {
   );
 }
 
+function handleEditExperience(
+  index,
+  educationalExperiences,
+  setFormState,
+  setEditingIndex
+) {
+  const experience = educationalExperiences[index];
+  setFormState(experience);
+  setEditingIndex(index);
+}
+
 export default function EducationalExperienceForm() {
   const [educationalExperiences, setEducationalExperience] = useState([]);
+  const [formState, setFormState] = useState({
+    degreeName: "",
+    institutionName: "",
+    yearFrom: "",
+    yearTo: "",
+  });
+
+  const [editingIndex, setEditingIndex] = useState(null);
+
   return (
     <>
       <div>
         <form
           onSubmit={(e) =>
-            handleEducationalExperience(e, setEducationalExperience)
+            handleEducationalExperience(
+              e,
+              setEducationalExperience,
+              editingIndex,
+              setEditingIndex,
+              setFormState
+            )
           }
         >
           <label>
             Degree Name:
-            <input name="degreeName" />
+            <input
+              name="degreeName"
+              value={formState.degreeName}
+              onChange={(e) =>
+                setFormState({ ...formState, degreeName: e.target.value })
+              }
+            />
           </label>
           <br />
           <label>
             Institution Name:
-            <input name="institutionName" />
+            <input
+              name="institutionName"
+              value={formState.institutionName}
+              onChange={(e) =>
+                setFormState({ ...formState, institutionName: e.target.value })
+              }
+            />
           </label>
           <br />
           <label>
             Year from:
-            <input name="yearFrom" />
+            <input
+              name="yearFrom"
+              value={formState.yearFrom}
+              onChange={(e) =>
+                setFormState({ ...formState, yearFrom: e.target.value })
+              }
+            />
           </label>
           <br />
           <label>
             Year to:
-            <input name="yearTo" />
+            <input
+              name="yearTo"
+              value={formState.yearTo}
+              onChange={(e) =>
+                setFormState({ ...formState, yearTo: e.target.value })
+              }
+            />
           </label>
           <br />
-          <button type="submit">Add experience</button>
+          <button type="submit">
+            {editingIndex === null ? "Add experience" : "Update experience"}
+          </button>
         </form>
         {educationalExperiences.map((experience, index) => (
           <EducationalExperienceDisplay
@@ -63,6 +136,14 @@ export default function EducationalExperienceForm() {
             {...experience}
             onDelete={() =>
               handleDeleteExperience(index, setEducationalExperience)
+            }
+            onEdit={() =>
+              handleEditExperience(
+                index,
+                educationalExperiences,
+                setFormState,
+                setEditingIndex
+              )
             }
           />
         ))}

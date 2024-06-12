@@ -4,16 +4,18 @@ export default function EducationalExperienceDisplay({
   yearFrom,
   yearTo,
   onDelete,
+  onEdit,
 }) {
   return (
     <>
       <div>
-        <p>Degree: {degreeName}</p>
-        <p>InstitutionName: {institutionName}</p>
+        <h2>{degreeName}</h2>
+        <h3>{institutionName}</h3>
         <p>
           {yearFrom} - {yearTo}
         </p>
         <button onClick={onDelete}>delete</button>
+        <button onClick={onEdit}>Edit</button>
       </div>
     </>
   );
